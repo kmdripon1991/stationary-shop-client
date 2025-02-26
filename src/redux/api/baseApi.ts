@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const baseQuery = fetchBaseQuery({
   // baseUrl: "http://localhost:5000/api/v1",
-  baseUrl: "https://stationary-shop-server-final.vercel.app/",
+  baseUrl: "https://satationary-server.vercel.app/",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).user.token;
@@ -36,7 +36,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
   if (result.error?.status === 401) {
     const res = await fetch(
-      "https://stationary-shop-server-final.vercel.app/auth/refresh-token",
+      "https://satationary-server.vercel.app/auth/refresh-token",
       {
         method: "POST",
         credentials: "include",

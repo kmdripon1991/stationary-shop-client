@@ -1,29 +1,35 @@
-import MainLayout from "../component/layout/MainLayout";
-import Navbar1 from "../pages/main/Navbar1";
-import Navbar2 from "../pages/main/Navbar2";
+import Orders from "../pages/main/Orders";
+import ProtectedRoutes from "../component/layout/ProtectedRoutes";
+import AdminLayout from "../component/layout/AdminLayout";
+import Dashboard from "../component/Dashboard";
+import Cart from "../pages/main/Cart";
+// import Cart from "../pages/main/Cart";
 
-export const UserPaths = [
-  { path: "home", name: "Home" },
-  { path: "shop", name: "Shop" },
-  { path: "orders", name: "My Orders" },
-  { path: "profile", name: "Profile" },
-  { path: "wishlist", name: "Wishlist" },
-  { path: "contact", name: "Contact Us" },
-  { path: "about", name: "About Us" },
+const userRoutes = [
+ 
+  {
+    path: "/user",
+    element: (
+      <ProtectedRoutes>
+        <AdminLayout />
+      </ProtectedRoutes>
+    ),
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+
+      {
+        path: "my-orders",
+        element: <Orders />,
+      },
+      {
+        path: "carts",
+        element: <Cart />,
+      }
+    ],
+  },
 ];
 
-export const itemsDummy = [
-  {
-    name: "Home",
-    path: "home",
-    element: <MainLayout />,
-  },
-  {
-    path: "shop",
-    element: <Navbar1 />,
-  },
-  {
-    path: "orders",
-    element: <Navbar2 />,
-  },
-];
+export default userRoutes;

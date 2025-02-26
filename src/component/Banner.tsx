@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 interface BannerProps {
   backgroundImage: string;
@@ -49,9 +50,11 @@ const Banner = ({ backgroundImage, title, description }: BannerProps) => {
       >
         <h1 style={{ fontSize: "36px", marginBottom: "20px" }}>{title}</h1>
         <p style={{ fontSize: "18px", marginBottom: "30px" }}>{description}</p>
-        <Button type="primary" size="large" style={{ fontSize: "16px" }}>
-          Shop Now
-        </Button>
+        <Link to="/shop">
+          <Button type="primary" size="large" style={{ fontSize: "16px" }}>
+            Shop Now
+          </Button>
+        </Link>
       </div>
     </div>
   );

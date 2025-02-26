@@ -5,10 +5,12 @@ import { toast } from "sonner";
 import { verifyToken } from "../utils/verifyToken";
 import { FieldValues } from "react-hook-form";
 import { useAppDispatch } from "../redux/hook";
-import { useNavigate, useLocation } from "react-router-dom";
 import { Typography } from "antd";
 import { setUser, TUser } from "../redux/features/auth/authSlice";
 import { useLoginMutation } from "../redux/features/auth/authApi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const { Title } = Typography;
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -23,24 +25,29 @@ const Login = () => {
   const [login] = useLoginMutation();
 
   const onSubmit = async (data: FieldValues) => {
-    // const toastId = toast("Login...");
-    const userInfo = {
-      email: data.email,
-      password: data.password,
-    };
-    const res = await login(userInfo).unwrap();
-    // console.log(res.data.token.accessToken);
-    const user = verifyToken(res.data.token.accessToken) as TUser;
-    // console.log(user);
+    try {
+      const userInfo = {
+        email: data.email,
+        password: data.password,
+      };
 
-    dispatch(setUser({ user: user, token: res.data.token }));
-    toast.success("User Logged in successfully");
-    // navigate(`/${user.role}/dashboard`);
-    const from = location.state?.from?.pathname || "/";
-    navigate(from, { replace: true });
+      const res = await login(userInfo).unwrap();
+      const user = verifyToken(`Bearer ${res.data.token}`) as TUser;
+
+      dispatch(setUser({ user: user, token: res.data.token }));
+      toast.success("User logged in successfully");
+      const redirectPath = location.state?.from || `/${user.role}/dashboard`;
+    
+      if (user.role === "admin") {
+        navigate(redirectPath);
+      }
+      if (user.role === "user") {
+        navigate(redirectPath);
+      }
+    } catch {
+      toast.error("Login failed. Please check your credentials.");
+    }
   };
-
-  const { Title } = Typography;
 
   return (
     <Row
@@ -85,9 +92,11 @@ const Login = () => {
               </Button>
             </Col>
             <Col>
-              <Button type="link" style={{ padding: 0 }}>
-                Sign Up
-              </Button>
+              <Link to="/signup">
+                <Button type="link" style={{ padding: 0 }}>
+                  Sign Up
+                </Button>
+              </Link>
             </Col>
           </Row>
         </Card>

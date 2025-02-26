@@ -1,16 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the initial state for the cart
-interface CartItem {
+export type TCartItem = {
   _id: string;
   name: string;
   price: number;
   quantity: number;
   imageUrl: string;
-}
+  model: string;
+};
 
 interface CartState {
-  items: CartItem[];
+  items: TCartItem[];
 }
 
 const initialState: CartState = {
@@ -23,13 +24,17 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     // Action to add an item to the cart
-    addToCart: (state, action: PayloadAction<CartItem>) => {
-      console.log(action.payload);
-      state.items.push(action.payload);
+    addToCart: (state, action: PayloadAction<TCartItem>) => {
+      const carts = state.items;
+      const isExist = carts.find((item) => item._id === action.payload._id);
+      if (isExist) {
+        isExist.quantity += 1;
+      } else {
+        state.items.push(action.payload);
+      }
     },
     // Action to remove an item from the cart
     removeFromCart: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
       state.items = state.items.filter((item) => item._id !== action.payload);
     },
     // Action to clear the entire cart

@@ -1,65 +1,49 @@
 import { Button, Row, Col, Card } from "antd";
 import Title from "antd/es/typography/Title";
 import { Link } from "react-router-dom";
-
-// Sample data (Replace with real product data)
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Product 1",
-    image: "https://picsum.photos/200/300",
-    price: "$10",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    image: "https://picsum.photos/200/300",
-    price: "$20",
-  },
-  {
-    id: 3,
-    name: "Product 3",
-    image: "https://picsum.photos/200/300",
-    price: "$30",
-  },
-  {
-    id: 4,
-    name: "Product 4",
-    image: "https://picsum.photos/200/300",
-    price: "$40",
-  },
-  {
-    id: 5,
-    name: "Product 5",
-    image: "https://picsum.photos/200/300",
-    price: "$50",
-  },
-  {
-    id: 6,
-    name: "Product 6",
-    image: "https://picsum.photos/200/300",
-    price: "$60",
-  },
-];
+import { useSearchProductsQuery } from "../redux/features/products/products.api";
+import { TProduct } from "./ProductCard";
 
 const FeaturedProducts = () => {
+  const { data: products } = useSearchProductsQuery({
+    category: "writing",
+  });
+  const featuredProducts = products?.data?.result;
   return (
-    <div style={{ padding: "40px 40px", textAlign: "center" }}>
-      {/* <h2>Featured Products</h2> */}
-      <Title level={2}>Featured Products</Title>
-      <Row gutter={16} justify="center">
-        {featuredProducts.slice(0, 4).map((product) => (
-          <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
+    <div style={{ padding: "40px", textAlign: "center" }}>
+      <Title level={2} style={{ marginBottom: "24px" }}>
+        Featured Products
+      </Title>
+      <Row gutter={[16, 16]} justify="center">
+        {featuredProducts?.slice(0, 4).map((product: TProduct) => (
+          <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
             <Card
               hoverable
-              cover={<img alt={product.name} src={product.image} />}
+              cover={
+                <img
+                  alt={product.name}
+                  src={product.image}
+                  style={{
+                    height: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+              }
+              style={{
+                width: "100%",
+                borderRadius: "8px",
+              }}
             >
-              <Card.Meta title={product.name} description={product.price} />
+              <Card.Meta
+                title={product.name}
+                description={`$${product.price}`}
+                style={{ textAlign: "left" }}
+              />
             </Card>
           </Col>
         ))}
       </Row>
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "24px" }}>
         <Link to="/all-products">
           <Button type="primary" size="large">
             View All

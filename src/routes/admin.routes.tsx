@@ -1,9 +1,37 @@
-export const AdminPaths = [
-  { path: "dashboard", name: "Dashboard" },
-  { path: "users", name: "Manage Users" },
-  { path: "products", name: "Manage Products" },
-  { path: "orders", name: "Manage Orders" },
-  { path: "reviews", name: "Manage Reviews" },
-  { path: "settings", name: "Settings" },
-  { path: "reports", name: "Reports" },
+import ProtectedRoutes from "../component/layout/ProtectedRoutes";
+import AdminLayout from "../component/layout/AdminLayout";
+import Shop from "../pages/main/Shop";
+import CreateProduct from "../pages/admin/CreateProduct";
+import Dashboard from "../component/Dashboard";
+import Order from "../pages/main/Orders";
+
+const adminRoutes = [
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoutes>
+        <AdminLayout />
+      </ProtectedRoutes>
+    ),
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "products",
+        element: <Shop />,
+      },
+      {
+        path: "orders",
+        element: <Order />,
+      },
+      {
+        path: "products/create-product",
+        element: <CreateProduct />,
+      },
+    ],
+  },
 ];
+
+export default adminRoutes;

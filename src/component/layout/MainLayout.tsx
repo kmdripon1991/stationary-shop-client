@@ -8,12 +8,8 @@ const { Content } = Layout;
 const MainLayout = () => {
   return (
     <Layout>
-      {/* <Layout style={{ height: "100vh" }}> */}
       <NavbarItems />
-
-      <Content style={{ padding: "0 48px", width: "100%" }}>
-        {/* Content */}
-
+      <Content>
         <Outlet />
       </Content>
       <SSFooter />

@@ -3,20 +3,13 @@ import ProductCard, { TProduct } from "../../component/ProductCard";
 import { useGetAllProductsQuery } from "../../redux/features/products/products.api";
 
 const Shop = () => {
-  const { data: productsData } = useGetAllProductsQuery(undefined);
-  console.log(productsData?.data?.result);
+  const { data: allProducts } = useGetAllProductsQuery(undefined);
 
   return (
     <div style={{ padding: "16px" }}>
       <Row gutter={[24, 24]}>
-        {productsData?.data?.result.map((product: TProduct) => (
-          <Col
-            key={product._id}
-            xs={24} // 1 card per row on extra small devices (mobile)
-            sm={12} // 2 cards per row on small devices (tablet)
-            md={8} // 3 cards per row on medium devices (small laptops)
-            lg={6} // 4 cards per row on large devices (desktops)
-          >
+        {allProducts?.data?.result.map((product: TProduct) => (
+          <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
             <ProductCard product={product} />
           </Col>
         ))}

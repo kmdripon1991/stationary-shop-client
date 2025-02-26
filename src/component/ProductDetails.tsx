@@ -1,26 +1,20 @@
 import { Button, Card, Col, Row, Typography, Image, Divider } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch } from "../redux/hook";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { addToCart } from "../redux/features/cartSlice";
 import { useGetSingleProductQuery } from "../redux/features/products/products.api";
+import { selectCurrentUser } from "../redux/features/auth/authSlice";
 
 const { Title, Text } = Typography;
 
 const ProductDetails = () => {
+  const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
   const { productId } = useParams();
-  const productDummy = {
-    name: "Wireless Headphones",
-    description:
-      "High-quality wireless headphones with noise-cancellation feature and long battery life.",
-    price: 129.99,
-    stock: 25,
-  };
 
   const { data: productData } = useGetSingleProductQuery(productId);
 
-  console.log(productData?.data);
 
   const cartData = {
     _id: productData?.data?._id,
@@ -30,72 +24,76 @@ const ProductDetails = () => {
     quantity: 1,
     imageUrl: productData?.data?.image,
   };
-  console.log("product details cart data", cartData);
 
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    dispatch(addToCart(cartData));
-    navigate("/carts");
+    if (!user) {
+      navigate("/login");
+    } else {
+      dispatch(addToCart(cartData));
+      navigate("/user/carts");
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <Row gutter={16} style={{ display: "flex", alignItems: "stretch" }}>
-        <Col
-          xs={24}
-          sm={12}
-          md={8}
-          style={{ display: "flex", flexDirection: "column" }}
-        >
-          {/* Product Image */}
+      <Row gutter={[16, 16]} align="stretch">
+        {/* Left Side: Image */}
+        <Col xs={24} sm={24} md={12} lg={10} style={{ display: "flex" }}>
           <Image
             width="100%"
-            alt={productDummy.name}
-            src="https://picsum.photos/300/300"
+            alt="product"
+            src={productData?.data?.image}
             style={{
               borderRadius: "8px",
               objectFit: "cover",
               height: "100%",
+              minHeight: "300px",
             }}
+            preview={false}
           />
         </Col>
-        <Col
-          xs={24}
-          sm={12}
-          md={16}
-          style={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
+
+        {/* Right Side: Product Details Card */}
+        <Col xs={24} sm={24} md={12} lg={14} style={{ display: "flex" }}>
           <Card
-            title={productDummy.name}
+            title={productData?.data.name}
             bordered={false}
-            style={{ flex: 1, display: "flex", flexDirection: "column" }}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
           >
             <Title level={4} style={{ fontSize: "18px" }}>
               Description
             </Title>
-            <Text style={{ fontSize: "14px" }}>{productDummy.description}</Text>
-            <Divider />
+            <Text style={{ fontSize: "14px" }}>
+              {productData?.data.description}
+            </Text>
+
             <Title level={4} style={{ fontSize: "18px" }}>
               Price
             </Title>
             <Text strong style={{ fontSize: "16px" }}>
-              ${productDummy.price}
+              ${productData?.data.price}
             </Text>
-            <Divider />
+
             <Title level={4} style={{ fontSize: "18px" }}>
               Stock
             </Title>
             <Text style={{ fontSize: "14px" }}>
-              {productDummy.stock} items available
+              {productData?.data.quantity} items available
             </Text>
             <Divider />
-            {/* Add to Cart Button */}
 
+            {/* Add to Cart Button */}
             <Button
               type="primary"
               icon={<ShoppingCartOutlined />}
-              style={{ marginTop: "20px" }}
+              style={{ marginTop: "auto" }}
               onClick={handleAddToCart}
             >
               Add to Cart

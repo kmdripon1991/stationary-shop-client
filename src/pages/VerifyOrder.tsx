@@ -51,19 +51,17 @@ interface OrderData {
   date_time: string;
 }
 
-export default function OrderVerification() {
+const OrderVerification = () => {
   const [searchParams] = useSearchParams();
-  console.log(searchParams);
+
   const { isLoading, data } = useVerifyOrderQuery(
     searchParams.get("order_id"),
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  console.log(data);
 
   const orderData: OrderData = data?.data?.[0];
-  console.log(orderData);
 
   return isLoading ? (
     <Skeleton active />
@@ -161,7 +159,7 @@ export default function OrderVerification() {
               )}
             </div>
             <div className="mt-4">
-              <Link to="/my-orders">
+              <Link to="/user/my-orders">
                 <Button type="primary" block>
                   View Orders
                 </Button>
@@ -172,4 +170,6 @@ export default function OrderVerification() {
       </Row>
     </div>
   );
-}
+};
+
+export default OrderVerification;

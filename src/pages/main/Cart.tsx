@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import {
   clearCart,
   removeFromCart,
+  TCartItem,
   updateQuantity,
 } from "../../redux/features/cartSlice";
 import { useAddOrderMutation } from "../../redux/features/order/orderApi";
@@ -23,32 +24,22 @@ import { toast } from "sonner";
 
 const { Text, Title } = Typography;
 
-export type TCartData = {
-  _id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl?: string | undefined;
-  model: string;
-};
-
 const Cart = () => {
   const { items } = useAppSelector((state) => state.carts) as {
-    items: TCartData[];
+    items: TCartItem[];
   };
   const dispatch = useAppDispatch();
 
-  const handleQuantityChange = (value: number, record: TCartData) => {
+  const handleQuantityChange = (value: number, record: TCartItem) => {
     dispatch(updateQuantity({ id: record._id, quantity: value }));
   };
 
-  const columns: TableColumnsType<TCartData> = [
+  const columns: TableColumnsType<TCartItem> = [
     {
       title: "Product",
       dataIndex: "name",
       key: "name",
-      render: (text: string, item: TCartData) => {
-        console.log(text, item);
+      render: (text: string, item: TCartItem) => {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Image
@@ -79,7 +70,7 @@ const Cart = () => {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
-      render: (quantity: number, item: TCartData) => (
+      render: (quantity: number, item: TCartItem) => (
         <InputNumber
           min={1}
           value={quantity}
@@ -90,7 +81,7 @@ const Cart = () => {
     {
       title: "Remove",
       key: "remove",
-      render: (item: TCartData) => (
+      render: (item: TCartItem) => (
         <Button
           onClick={() => dispatch(removeFromCart(item._id))}
           type="text"
@@ -115,7 +106,14 @@ const Cart = () => {
       quantity: item.quantity,
     }));
 
-    await addOrder(orderData);
+    const result = await addOrder(orderData);
+   
+    if (result.data) {
+      dispatch(clearCart());
+      toast.success("Order Placed Successfully");
+    } else {
+      toast.error("Order Placed Fail");
+    }
   };
 
   const toastId = "cart";
@@ -125,12 +123,10 @@ const Cart = () => {
     if (isSuccess) {
       toast.success(data?.message, { id: toastId });
       if (data?.data) {
-        console.log(data.data);
         setTimeout(() => {
           window.location.href = data.data.payment.checkout_url;
         }, 1000);
       }
-      console.log(data.data.payment.checkout_url);
     }
 
     if (isError) toast.error(JSON.stringify(error), { id: toastId });

@@ -15,7 +15,7 @@ export type TProduct = {
   inStock: boolean;
 };
 const ProductCard = ({ product }: { product: TProduct }) => {
-  const { name, category, price } = product;
+  const { name, category, price, image } = product;
   const navigate = useNavigate();
 
   const handleViewDetails = (productId: string) => {
@@ -46,7 +46,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         >
           <img
             alt={name}
-            src={`https://picsum.photos/300/220?random=${product._id}`}
+            src={image}
             style={{
               width: "100%",
               height: "100%",

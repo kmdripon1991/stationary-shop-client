@@ -1,15 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import About from "../pages/About";
-import ProtectedRoutes from "../component/layout/ProtectedRoutes";
-import Orders from "../pages/main/Orders";
-import Cart from "../pages/main/Cart";
 import App from "../App";
-import Shop from "../pages/main/Shop";
 import Home from "../pages/main/Home/Home";
+import Shop from "../pages/main/Shop";
 import ProductDetails from "../component/ProductDetails";
+import About from "../pages/About";
 import VerifyOrder from "../pages/VerifyOrder";
+import Login from "../pages/Login";
+import userRoutes from "./user.routes";
+import adminRoutes from "./admin.routes";
+import Signup from "../pages/Signup";
+import Categories from "../pages/main/Categories";
 
 const router = createBrowserRouter([
   {
@@ -25,43 +25,35 @@ const router = createBrowserRouter([
         element: <Shop />,
       },
       {
+        path: "categories/:category",
+        element: <Categories />,
+      },
+
+      {
         path: "products/:productId",
         element: <ProductDetails />,
-      },
-      {
-        path: "my-orders",
-        element: (
-          <ProtectedRoutes>
-            <Orders />
-          </ProtectedRoutes>
-        ),
-      },
-      {
-        path: "carts",
-        element: (
-          <ProtectedRoutes>
-            <Cart />
-          </ProtectedRoutes>
-        ),
-      },
-      {
-        path: "/verify",
-        element: <VerifyOrder />,
       },
       {
         path: "about",
         element: <About />,
       },
+      {
+        path: "verify",
+        element: <VerifyOrder />,
+      },
+
+      //...userRoutes,
     ],
   },
-
+  ...userRoutes,
+  ...adminRoutes,
   {
     path: "/login",
     element: <Login />,
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "/signup",
+    element: <Signup />,
   },
 ]);
 

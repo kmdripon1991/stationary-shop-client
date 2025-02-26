@@ -213,7 +213,7 @@ const NavbarItems = () => {
     >
       {/* Left Section: Logo */}
       <img
-        src="/src/assets/logo/st-logo.png"
+        src="https://i.ibb.co.com/QBHX70Y/st-logo.png"
         alt="Stationery Haven Logo"
         style={{ height: "90px", marginRight: "16px" }}
       />

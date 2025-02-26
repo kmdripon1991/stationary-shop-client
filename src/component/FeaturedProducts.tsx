@@ -6,7 +6,7 @@ import { TProduct } from "./ProductCard";
 
 const FeaturedProducts = () => {
   const { data: products } = useSearchProductsQuery({
-    category: "writing",
+    category: "Writing",
   });
   const featuredProducts = products?.data?.result;
   return (

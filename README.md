@@ -1,50 +1,67 @@
-# React + TypeScript + Vite
+# Stationary shop client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Redux Toolkit Query Setup
 
-Currently, two official plugins are available:
+This project uses Redux Toolkit Query to handle API requests, authentication, and automatic token refreshing in a React application with TypeScript.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Redux Store Configuration with Redux Toolkit and Redux Persist
 
-## Expanding the ESLint configuration
+This configuration sets up a Redux store using Redux Toolkit and Redux Persist to manage authentication, cart, and order states in a React application.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Key Features:
 
-- Configure the top-level `parserOptions` property like this:
+- State Management: Utilizes @reduxjs/toolkit for efficient state management.
+- Persistent Storage: Saves authentication and cart state in localStorage using redux-persist.
+- API Integration: Integrates RTK Query for efficient data fetching and caching.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Redux Persist Configuration:
+
+- key: "root": Sets the root key for persisted state.
+- storage: Uses localStorage to store the state.
+
+
+## useAppDispatch
+
+- This is a wrapper for useDispatch that uses the AppDispatch type from the store.
+- Ensures that all dispatched actions are properly typed.
+
+## useAppSelector
+
+- This is a wrapper for useSelector that uses the RootState type from the store.
+- It provides TypeScript support for state selection, reducing errors when accessing state properties.
+
+## Base API Configuration
+
+We use fetchBaseQuery from Redux Toolkit Query to define a base API service. The configuration handles:
+
+- Setting the base URL for all API requests.
+- Including authentication tokens in headers.
+- Automatically refreshing expired tokens.
+
+# Base URL
+
+- All API requests are routed through the backend server:
+
+```
+baseUrl: "https://satationary-server.vercel.app/"
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Authentication Handling
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+This setup ensures secure API communication by:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- Attaching the Bearer token to all outgoing requests for authentication.
+- Using Refresh Tokens to automatically refresh expired tokens.
+
+## Automatic Token Refresh:
+
+- If the API response is 401 Unauthorized, it triggers the token refresh flow.
+- A request is sent to the /auth/refresh-token endpoint.
+- If a new access token is received:
+- The token is updated in the Redux store.
+- The original API request is retried with the new token.
+- If no token is received, the user is logged out.
+
+## Why Use credentials: "include"?
+
+- This allows cookies (e.g., refresh tokens) to be sent with the request, ensuring a secure token refresh flow.
